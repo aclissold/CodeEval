@@ -2,24 +2,27 @@ import sys
 
 # Problem 1: Fizz Buzz
 def main():
+    count = 0
     # Assign the file to variable "f" as read-only
     f = open(sys.argv[1], 'r')
     for line in f:
+        count += 1
+        if count > 1:
+            print()
         # Create a list of values for this particular line
-        values = [int(x) for x in line.split()]
-        for value in values:
-            if (value % a is 0) and (value % b is 0):
+        values = [int(value) for value in line.split()]
+        for i in range(1, values[2] + 1):
+            if (i % values[0] is 0) and (i % values[1] is 0):
                 print('FB', end='')
-            elif value % a is 0:
+            elif i % values[0] is 0:
                 print('F', end='')
-            elif i % b is 0:
+            elif i % values[1] is 0:
                 print('B', end='')
             else:
                 print(i, end='')
-            if i < n:
+            if i < values[2]:
                 print(' ', end='')
-        print()
-
+    f.close()
 
 if __name__ == '__main__':
     main()
