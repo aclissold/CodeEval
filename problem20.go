@@ -38,6 +38,9 @@ func main() {
     for scanner.Scan() {
         fmt.Println(strings.ToLower(scanner.Text()))
     }
+    if err := file.Close(); err != nil {
+        log.Fatal(err)
+    }
 }
 
 /* Ported from the following Python:
