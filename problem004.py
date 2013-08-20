@@ -1,4 +1,4 @@
-#!usr/bin/python3
+#!/usr/bin/env python3
 """Problem 4: Sum of Primes
 
 Challenge Description:

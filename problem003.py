@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Problem 3: Prime Palindrome
 def main():
     for num in range(1, 1000):
