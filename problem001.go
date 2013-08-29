@@ -35,9 +35,8 @@ line you print. E.g.
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"log"
+	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -45,30 +44,28 @@ import (
 
 var line string
 
-func main() {
-	if len(os.Args) == 0 {
-		fmt.Println("Usage: ./problem1 <file>")
-		os.Exit(0)
-	}
-	file, err := os.Open(os.Args[1])
+// check(err) eliminates some boilerplate
+func check(err error) {
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		text := strings.Split(scanner.Text(), " ")
+}
+
+func main() {
+	if len(os.Args) != 2 {
+		fmt.Fprintln(os.Stderr, "Usage: ./problem1 <file>")
+		os.Exit(1)
+	}
+	lines := readLines()
+	for _, line := range lines {
+		text := strings.Split(line, " ")
 		a, err := strconv.Atoi(text[0])
-		if err != nil {
-			log.Fatal(err)
-		}
+		check(err)
 		b, err := strconv.Atoi(text[1])
-		if err != nil {
-			log.Fatal(err)
-		}
+		check(err)
 		n, err := strconv.Atoi(text[2])
-		if err != nil {
-			log.Fatal(err)
-		}
+		check(err)
 		line = ""
 		for i := 1; i <= n; i++ {
 			switch {
@@ -84,4 +81,28 @@ func main() {
 		}
 		fmt.Println(line[:len(line)-1])
 	}
+}
+
+// readLines does the work bufio's scanner API would do, but CodeEval doesn't have Go 1.1 yet.
+func readLines() (lines []string) {
+	// Avoid a panic accessing os.Args[1]
+	if len(os.Args) != 2 {
+		fmt.Fprintln(os.Stderr, "Usage: ./XXX <file>") // XXX
+		os.Exit(1)
+	}
+
+	// Read data from a file given as a command line argument
+	data, err := ioutil.ReadFile(os.Args[1])
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	// Parse the lines of the file from data
+	lines = strings.Split(string(data), "\n")
+
+	// Remove the empty string after the final \n
+	lines = lines[:len(lines)-1]
+
+	return
 }
