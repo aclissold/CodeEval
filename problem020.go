@@ -22,35 +22,31 @@ this is some text
 package main
 
 import (
-    "bufio"
     "fmt"
-    "log"
+    "io/ioutil"
     "os"
     "strings"
 )
 
 func main() {
-    file, err := os.Open(os.Args[1])
-    if err != nil {
-        log.Fatal(err)
-    }
-    scanner := bufio.NewScanner(file)
-    for scanner.Scan() {
-        fmt.Println(strings.ToLower(scanner.Text()))
-    }
-    if err := file.Close(); err != nil {
-        log.Fatal(err)
+	for _, line := range lines() {
+        fmt.Println(strings.ToLower(line))
     }
 }
 
-/* Ported from the following Python:
-import sys
+// lines does the work bufio's scanner API would do, but CodeEval doesn't have Go 1.1 yet.
+// This is a minimal version of the function I normally use, for fun. It doesn't check if
+// a file was actually passed on the command line (which would cause a panic accessing os.Args[1],
+// nor does it check if an error is returned by ioutil.ReadFile.
+func lines() (lines []string) {
+	// Read data from a file given as a command line argument
+	data, _ := ioutil.ReadFile(os.Args[1])
 
-def main():
-    with open(sys.argv[1], 'r') as f:
-        for line in f:
-            print(line.lower(), end='')
+	// Parse the lines of the file from data
+	lines = strings.Split(string(data), "\n")
 
-if __name__ == '__main__':
-    main()
-*/
+	// Remove the empty string after the final \n
+	lines = lines[:len(lines)-1]
+
+	return
+}

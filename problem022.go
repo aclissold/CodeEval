@@ -27,28 +27,19 @@ e.g.
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
-	// Avoid panic reading os.Args[1]
-	if len(os.Args) != 2 {
-		fmt.Println("Usage: ./problem22 <file>")
-		os.Exit(0)
-	}
-	// Instantiate file and scanner
-	file, err := os.Open(os.Args[1])
-	if err != nil {
-		log.Fatal(err)
-	}
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
+    lines := readLines()
+    for _, line := range lines {
 		// n = int(line)
-		n, err := strconv.Atoi(scanner.Text())
+		n, err := strconv.Atoi(line)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -67,27 +58,28 @@ func main() {
 			fmt.Println(b)
 		}
 	}
-    if err := file.Close(); err != nil {
-        log.Fatal(err)
-    }
 }
 
-/* Portlet from the following Python:
-import sys
-def main():
-    with open(sys.argv[1], 'r') as f:
-        for line in f:
-            n = int(line)
-            if n == 0:
-                print(0)
-            if n == 1:
-                print(1)
-            else:
-                a, b = 0, 1
-                for i in range(1, n):
-                    a, b = b, a + b
-                print(b)
+// readLines does the work bufio's scanner API would do, but CodeEval doesn't have Go 1.1 yet.
+func readLines() (lines []string) {
+	// Avoid a panic accessing os.Args[1]
+	if len(os.Args) != 2 {
+		fmt.Fprintln(os.Stderr, "Usage: ./problem020 <file>")
+		os.Exit(1)
+	}
 
-if __name__ == '__main__':
-    main()
-*/
+	// Read data from a file given as a command line argument
+	data, err := ioutil.ReadFile(os.Args[1])
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	// Parse the lines of the file from data
+	lines = strings.Split(string(data), "\n")
+
+	// Remove the empty string after the final \n
+	lines = lines[:len(lines)-1]
+
+	return
+}
