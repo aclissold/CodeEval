@@ -20,23 +20,16 @@ ignored. Ensure that there are no trailing empty spaces on each line you print. 
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"log"
+	"io/ioutil"
 	"os"
 	"strings"
 )
 
 func main() {
-	file, err := os.Open(os.Args[1])
-	if err != nil {
-		log.Fatal(err)
-	}
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
+	lines := readLines()
+	for _, line := range lines {
 		// Create a list of words
-		line := scanner.Text()
-		line = strings.Trim(line, " ")
 		wordList := strings.Split(line, " ")
 		var output string
 		for _, word := range wordList {
@@ -49,27 +42,26 @@ func main() {
 	}
 }
 
-/* Ported from the following Python:
-import sys
+// readLines does the work bufio's scanner API would do, but CodeEval doesn't have Go 1.1 yet.
+func readLines() (lines []string) {
+	// Avoid a panic accessing os.Args[1]
+	if len(os.Args) != 2 {
+		fmt.Fprintln(os.Stderr, "Usage: ./problem008 <file>")
+		os.Exit(1)
+	}
 
-def main():
-    """Reverses the words of an input sentence.
+	// Read data from a file given as a command line argument
+	data, err := ioutil.ReadFile(os.Args[1])
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 
-    The input must be passed as the first command-line argument.
+	// Parse the lines of the file from data
+	lines = strings.Split(string(data), "\n")
 
-    """
-    with open(sys.argv[1], 'r') as f:
-        for line in f:
-            # Create a list of words
-            wordlist = line.split()
-            output = ''
-            for word in wordlist:
-                # Build a string in reversed-word order
-                output = str(word + ' ' + output)
-            # Remove the last character, always a space
-            output = output[:-1]
-            print(output)
+	// Remove the empty string after the final \n
+	lines = lines[:len(lines)-1]
 
-if __name__ == '__main__':
-    main()
-*/
+	return
+}
