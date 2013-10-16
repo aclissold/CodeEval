@@ -26,8 +26,8 @@ Print to stdout, 'true'(lowercase) if the bits are the same, else 'false'(lowerc
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
@@ -42,26 +42,14 @@ func check(err error) {
 }
 
 func main() {
-	// Avoid panic accessing os.Args[1] if it doesn't exit
-	if len(os.Args) != 2 {
-		fmt.Println("Usage: ./problem19 <file>")
-		os.Exit(1)
-	}
-	// Open file for reading
-	file, err := os.Open(os.Args[1])
-	check(err)
-	// Instantiate a new scanner
-	scanner := bufio.NewScanner(file)
+	lines := readLines()
 	// For each line in the file
-	for scanner.Scan() {
+	for _, line := range lines {
 		// Parse the line into a slice whose indices correspond to n, p1, and p2, respectively
-		line := strings.Split(scanner.Text(), ",")
-		n, err := strconv.Atoi(line[0])
-		check(err)
-		p1, err := strconv.Atoi(line[1])
-		check(err)
-		p2, err := strconv.Atoi(line[2])
-		check(err)
+		values := strings.Split(line, ",")
+		n, err := strconv.Atoi(values[0]); check(err)
+		p1, err := strconv.Atoi(values[1]); check(err)
+		p2, err := strconv.Atoi(values[2]); check(err)
 
 		// Store the larger of p1 and p2 in "max"
 		var max int
@@ -88,4 +76,28 @@ func main() {
 		// Print the results
 		fmt.Println(r1 == r2)
 	}
+}
+
+// readLines does the work bufio's scanner API would do, but CodeEval doesn't have Go 1.1 yet.
+func readLines() (lines []string) {
+	// Avoid a panic accessing os.Args[1]
+	if len(os.Args) != 2 {
+		fmt.Fprintln(os.Stderr, "Usage: ./problem019 <file>")
+		os.Exit(1)
+	}
+
+	// Read data from a file given as a command line argument
+	data, err := ioutil.ReadFile(os.Args[1])
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	// Parse the lines of the file from data
+	lines = strings.Split(string(data), "\n")
+
+	// Remove the empty string after the final \n
+	lines = lines[:len(lines)-1]
+
+	return
 }

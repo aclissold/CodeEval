@@ -41,6 +41,7 @@ import (
 var foundIntegers string
 
 func isHappy(integer string) int {
+	var nextInt int
 	if integer == "1" {
 		// Base case: 1 is already happy
 		return 1
@@ -52,7 +53,6 @@ func isHappy(integer string) int {
 		foundIntegers += integer + " " // Space-separated list
 
 		// Compute the next number in the sequence and detect if that's happy instead
-		var nextInt int
 		for _, ch := range integer {
 			// For each character in the string representing an integer
 			digit, err := strconv.Atoi(string(ch))
@@ -63,8 +63,8 @@ func isHappy(integer string) int {
 			// Compute the next number in the sequence as a rolling sum
 			nextInt += int(math.Pow(float64(digit), 2))
 		}
-		return isHappy(strconv.Itoa(nextInt))
 	}
+	return isHappy(strconv.Itoa(nextInt))
 }
 
 func main() {
@@ -81,7 +81,7 @@ func main() {
 func readLines() (lines []string) {
 	// Avoid a panic accessing os.Args[1]
 	if len(os.Args) != 2 {
-		fmt.Fprintln(os.Stderr, "Usage: ./XXX <file>") // XXX
+		fmt.Fprintln(os.Stderr, "Usage: ./problem039 <file>")
 		os.Exit(1)
 	}
 
