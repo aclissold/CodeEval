@@ -60,12 +60,9 @@ func main() {
 	lines := readLines()
 	for _, line := range lines {
 		text := strings.Split(line, " ")
-		a, err := strconv.Atoi(text[0])
-		check(err)
-		b, err := strconv.Atoi(text[1])
-		check(err)
-		n, err := strconv.Atoi(text[2])
-		check(err)
+		a, err := strconv.Atoi(text[0]); check(err)
+		b, err := strconv.Atoi(text[1]); check(err)
+		n, err := strconv.Atoi(text[2]); check(err)
 		line = ""
 		for i := 1; i <= n; i++ {
 			switch {
