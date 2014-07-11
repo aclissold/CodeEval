@@ -18,19 +18,20 @@
 // 2   4   6   8  10  12  14  16  18  20  22  24
 // 3   6   9  12  15  18  21  24  27  30  33  36
 
-for num in 1..13 {
-    print(num)
-    for multiplier in 2..13 {
-        let out = num * multiplier
-        var spaces = "   "
-        if out > 9 {
-            if out < 100 {
-                spaces = "  "
-            } else {
-                spaces = " "
-            }
+for row in 1...12 {
+    print(row)
+    for column in 2...12 {
+        let number = row * column
+        var spaces: String
+        switch number {
+        case 100...Int.max:
+            spaces = " "
+        case 10..<100:
+            spaces = "  "
+        default:
+            spaces = "   "
         }
-        print("\(spaces)\(out)")
+        print("\(spaces)\(number)")
     }
     println()
 }
